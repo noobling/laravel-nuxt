@@ -63,7 +63,14 @@
       submit: async function () {
         if (this.$refs.form.validate()) {
           const { data } = await axios.post('/register', this.form)
-          console.log(data)
+
+          const { data: { token } } = await axios.post('/login', { email: this.form.email, password: this.form.password })
+
+          this.$store.dispatch('auth/saveToken', { token })
+
+          await this.$store.dispatch('auth/updateUser', { user: data })
+
+          this.$router.push('/')
         }
       }
     }
